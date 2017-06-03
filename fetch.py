@@ -4,7 +4,7 @@ import urllib
 import urllib2
 from bs4 import BeautifulSoup
 
-gmail_user = 'xxxx'
+gmail_user = 'xxxxxxxxx'
 gmail_password = 'xxxx'
 
 time = (time.strftime("%d/%m/%Y"))
@@ -51,35 +51,37 @@ def get_soup(html):
     soup = BeautifulSoup(html, 'html.parser')
 
     # Divide the soup html by Div row result happens to be the interesting class div
-    mydivs = soup.findAll("div", {"class": "row result"})
+    mydivs = soup.findAll("div", {"class": "row"})
 
     # Storage for data
     data = {}
 
+
     # Goes though every element in mydivs soup and get the a text
+    prefix = "indeed.com/"
     for element in mydivs:
-        data[element.a.get_text()] = {}
+        data[element.a.get_text(), prefix + mydivs[0].a["href"]] = {}
         # Also need the location as well as the url to the job
     return data
+
+
 
 # get the soup data and pass in the html
 data = get_soup(html)
 
 # Format the data string for emailing
 def get_formatted_str(data):
-    job_string = ''
 
     # Simply goes trhough each list item and adds it to the string with a newline at the end.
-    for job in data:
-        job_string += job + '\n'
-    return job_string
 
-# New variable for the formatte string - pass in soup data
+    return ["%s %s" % x for x in data]
+
+# New variable for the formatted string - pass in soup data
 job_string = get_formatted_str(data)
 
 # Send an email to myself
 def send_mail():
-
+    myStr = '\n'.join(job_string)
     # Generate a message to send via email
     msg = "\r\n".join([
         "From: matt.wenger1024@gmail.com",
@@ -87,7 +89,7 @@ def send_mail():
         # Inlude url and location later
         "Subject: {} jobs for Matt {}".format(job_type, time),
         "",
-        "Here are your jobs: \n{}".format(job_string)
+        "Here are your jobs: \n{}".format(myStr)
     ])
     try:
         # Attempt to send an email
