@@ -4,7 +4,7 @@ import urllib
 import urllib2
 from bs4 import BeautifulSoup
 
-gmail_user = 'xxxxxxxxx'
+gmail_user = 'xxxx'
 gmail_password = 'xxxx'
 
 time = (time.strftime("%d/%m/%Y"))
@@ -69,7 +69,6 @@ def get_soup(html):
 # get the soup data and pass in the html
 data = get_soup(html)
 
-# Format the data string for emailing
 def get_formatted_str(data):
 
     # Simply goes trhough each list item and adds it to the string with a newline at the end.
@@ -79,12 +78,22 @@ def get_formatted_str(data):
 # New variable for the formatted string - pass in soup data
 job_string = get_formatted_str(data)
 
+def strip_garbage(data):
+    my_val = []
+    vars = job_type.split(" ")
+    for i in data:
+        if vars[0] in i:
+            my_val.append(i)
+    return my_val
+
+# Format the data string for emailing
+data = strip_garbage(job_string)
 # Send an email to myself
 def send_mail():
-    myStr = '\n'.join(job_string)
+    myStr = '\n'.join(data)
     # Generate a message to send via email
     msg = "\r\n".join([
-        "From: matt.wenger1024@gmail.com",
+        "From: Fetch Bot",
         "To: mattwen@uw.edu",
         # Inlude url and location later
         "Subject: {} jobs for Matt {}".format(job_type, time),
@@ -106,3 +115,9 @@ def send_mail():
         print 'Something went wrong...'
 # Send the mail
 send_mail()
+
+
+
+
+
+# send_mail()
