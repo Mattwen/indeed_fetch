@@ -4,17 +4,19 @@ import urllib
 import urllib2
 from bs4 import BeautifulSoup
 
+# fill in with your gmail credentials
 gmail_user = 'xxxx'
 gmail_password = 'xxxx'
 
+# Who is it addressed to
+to = ['xxxx']
+
+# dd/mm/yyyy
 time = (time.strftime("%d/%m/%Y"))
+# change to whatever
 job_type = 'System Administration'
 
-sent_from = gmail_user
-to = ['mattwen@uw.edu']
-subject = 'OMG Super Important Message'
-body = 'here is the info'
-
+# Generates an Indeed GET
 def get_indeed_request(url):
 
     # params for indeed GET request
@@ -22,7 +24,7 @@ def get_indeed_request(url):
         'q': "Systems Administrator",   # Job title
         'l': "Seattle",                 # Location
         'explvl': "entry_level",        # Exp level
-        'limit': '50',                  # Page limit
+        'limit': '50',                  # Job limit
         'fromage': '7',                 # Post age
     }
     # Try a GET request
@@ -64,20 +66,18 @@ def get_soup(html):
         # Also need the location as well as the url to the job
     return data
 
-
-
 # get the soup data and pass in the html
 data = get_soup(html)
 
 def get_formatted_str(data):
 
-    # Simply goes trhough each list item and adds it to the string with a newline at the end.
-
+    # Simply goes through each tuple list item and turns it into a single list
     return ["%s %s" % x for x in data]
 
 # New variable for the formatted string - pass in soup data
 job_string = get_formatted_str(data)
 
+# Turns list into string and strips jobs that are irrelevant
 def strip_garbage(data):
     my_val = []
     vars = job_type.split(" ")
@@ -107,7 +107,7 @@ def send_mail():
         # login with credentials
         server.login(gmail_user, gmail_password)
         # sendmail requires from, to, and message content in that order
-        server.sendmail(sent_from, to, msg)
+        server.sendmail(gmail_user, to, msg)
         server.close()
 
         print 'Email sent!'
@@ -115,9 +115,3 @@ def send_mail():
         print 'Something went wrong...'
 # Send the mail
 send_mail()
-
-
-
-
-
-# send_mail()
